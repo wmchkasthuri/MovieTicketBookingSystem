@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1784266321 source:c:\users\user\desktop\groupassignment\groupassignment\main.c
+	<stdio.h>
+	<string.h>
+	"structures.h"
+
+1784266218 c:\users\user\desktop\groupassignment\groupassignment\structures.h
+
+1784266276 source:c:\users\user\desktop\groupassignment\groupassignment\operations.c
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	"structures.h"
+
+1784266253 source:c:\users\user\desktop\groupassignment\groupassignment\pricing.c
+	<stdio.h>
+	"structures.h"
+
