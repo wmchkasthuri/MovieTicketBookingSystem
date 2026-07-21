@@ -14,6 +14,8 @@ typedef struct {
     double pricePaid;
     int isStudent;
     int isSenior;
+    int foodComboChoice;
+    double foodCost;
 } Seat;
 
 typedef struct {

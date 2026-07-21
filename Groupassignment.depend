@@ -16,3 +16,20 @@
 	<stdio.h>
 	"structures.h"
 
+1784530135 source:c:\users\acer\desktop\groupassignment\movieticketbookingsystem\main.c
+	<stdio.h>
+	<string.h>
+	"structures.h"
+
+1784543369 c:\users\acer\desktop\groupassignment\movieticketbookingsystem\structures.h
+
+1784530135 source:c:\users\acer\desktop\groupassignment\movieticketbookingsystem\operations.c
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	"structures.h"
+
+1784544640 source:c:\users\acer\desktop\groupassignment\movieticketbookingsystem\pricing.c
+	<stdio.h>
+	"structures.h"
+

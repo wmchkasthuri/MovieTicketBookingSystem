@@ -58,6 +58,10 @@ void bookSeat() {
         printf("Error: Invalid Selection!\n");
         return;
     }
+    int foodChoice=0;
+    printf("Add snack combo: (0: None, 1: Popcorn+Drink Rs.300, 2: Large combo Rs.500): ");
+    foodChoice = getValidInt();
+    }
 
     printf("How many seats to book? ");
     int numSeats = getValidInt();
@@ -106,8 +110,9 @@ void bookSeat() {
         strcpy(seat->customerName, custName);
         seat->isStudent = isStud;
         seat->isSenior = isSen;
+        seat->foodComboChoice=foodChoice;
 
-        double price = calculatePrice(r, isStud, isSen, isGroup);
+        double price = calculatePrice(r, isStud, isSen, isGroup, foodChoice);
         seat->pricePaid = price;
         totalCost += price;
 

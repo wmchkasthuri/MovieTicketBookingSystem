@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "structures.h"
 
-double calculatePrice(int row, int isStudent, int isSenior, int isGroup) {
+double calculatePrice(int row, int isStudent, int isSenior, int isGroup, int foodChoice) {
     double basePrice = 0;
 
     if (row == 0 || row == 1) {
@@ -25,6 +25,13 @@ double calculatePrice(int row, int isStudent, int isSenior, int isGroup) {
     if (isGroup) {
         finalPrice = finalPrice * 0.90;
     }
+    double foodCost = 0.0;
+    if (foodChoice == 1)
+        foodCost = 300.0;
+    else if (foodChoice == 2)
+        foodCost == 500.0;
 
-    return finalPrice;
+
+    return finalPrice + foodCost;
+
 }
