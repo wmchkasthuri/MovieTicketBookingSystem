@@ -32,6 +32,6 @@ typedef struct {
 
 extern Movie movies[NUM_MOVIES];
 
-int getValidInt();
+int getValidInt(void);
 
 #endif

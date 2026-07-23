@@ -4,7 +4,11 @@
 #include <ctype.h>
 #include "structures.h"
 
-double calculatePrice(int row, int isStudent, int isSenior, int isGroup);
+// External helper from main.c
+extern int getValidInt();
+
+// Function prototype from pricing module
+double calculatePrice(int row, int isStudent, int isSenior, int isGroup, int foodChoice);
 
 void viewShowtimes() {
     printf("\n--- Available Movies & Showtimes ---\n");
@@ -58,14 +62,13 @@ void bookSeat() {
         printf("Error: Invalid Selection!\n");
         return;
     }
-    int foodChoice=0;
-    printf("Add snack combo: (0: None, 1: Popcorn+Drink Rs.300, 2: Large combo Rs.500): ");
-    foodChoice = getValidInt();
-    }
 
-    printf("How many seats to book? ");
+    printf("How many seats to book (1-50)? ");
     int numSeats = getValidInt();
-    if (numSeats <= 0) return;
+    if (numSeats <= 0 || numSeats > 50) {
+        printf("Error: Invalid number of seats!\n");
+        return;
+    }
 
     int isGroup = (numSeats >= 4) ? 1 : 0;
     int selectedRows[50], selectedCols[50];
@@ -73,32 +76,56 @@ void bookSeat() {
     for (int i = 0; i < numSeats; i++) {
         char rowChar;
         printf("Enter Row letter for seat %d (A-E): ", i + 1);
-        scanf(" %c", &rowChar);
-        rowChar = toupper(rowChar);
-        int r = rowChar - 'A';
+        while (scanf(" %c", &rowChar) != 1 || toupper(rowChar) < 'A' || toupper(rowChar) >= ('A' + ROWS)) {
+            while (getchar() != '\n');
+            printf("Invalid Row! Enter letter (A-E): ");
+        }
+        int r = toupper(rowChar) - 'A';
 
         printf("Enter Column number for seat %d (1-10): ", i + 1);
         int c = getValidInt() - 1;
 
-        if (r < 0 || r >= ROWS || c < 0 || c >= COLS) {
+        if (c < 0 || c >= COLS) {
             printf("Error: Seat out of range!\n");
             return;
         }
+
         if (movies[m].showtimes[s].seats[r][c].isBooked) {
-            printf("Error: Seat %c%d is already taken!\n", rowChar, c + 1);
+            printf("Error: Seat %c%d is already taken!\n", toupper(rowChar), c + 1);
             return;
         }
+
+        // FIX: Check for duplicate seat selection in current booking batch
+        for (int k = 0; k < i; k++) {
+            if (selectedRows[k] == r && selectedCols[k] == c) {
+                printf("Error: You already selected seat %c%d for this booking!\n", toupper(rowChar), c + 1);
+                return;
+            }
+        }
+
         selectedRows[i] = r;
         selectedCols[i] = c;
     }
 
+    int foodChoice = 0;
+    printf("Add snack combo: (0: None, 1: Popcorn+Drink Rs.300, 2: Large combo Rs.500): ");
+    foodChoice = getValidInt();
+
     char custName[MAX_NAME];
     printf("Enter Customer Name: ");
     scanf(" %[^\n]", custName);
+
     printf("Is student? (1=Yes, 0=No): ");
     int isStud = getValidInt();
-    printf("Is senior citizen? (1=Yes, 0=No): ");
-    int isSen = getValidInt();
+
+    int isSen = 0;
+    // FIX: A customer can only be student OR senior, not both
+    if (isStud) {
+        isSen = 0;
+    } else {
+        printf("Is senior citizen? (1=Yes, 0=No): ");
+        isSen = getValidInt();
+    }
 
     double totalCost = 0;
     for (int i = 0; i < numSeats; i++) {
@@ -110,7 +137,7 @@ void bookSeat() {
         strcpy(seat->customerName, custName);
         seat->isStudent = isStud;
         seat->isSenior = isSen;
-        seat->foodComboChoice=foodChoice;
+        seat->foodComboChoice = foodChoice;
 
         double price = calculatePrice(r, isStud, isSen, isGroup, foodChoice);
         seat->pricePaid = price;
@@ -129,16 +156,27 @@ void cancelBooking() {
     printf("Select Showtime: ");
     int s = getValidInt() - 1;
 
-    if (m < 0 || m >= NUM_MOVIES || s < 0 || s >= NUM_SHOWTIMES) return;
+    if (m < 0 || m >= NUM_MOVIES || s < 0 || s >= NUM_SHOWTIMES) {
+        printf("Error: Invalid Selection!\n");
+        return;
+    }
 
     char rowChar;
     printf("Enter Row (A-E): ");
-    scanf(" %c", &rowChar);
+    if (scanf(" %c", &rowChar) != 1) {
+        while (getchar() != '\n');
+        printf("Error: Invalid row!\n");
+        return;
+    }
     int r = toupper(rowChar) - 'A';
+
     printf("Enter Column (1-10): ");
     int c = getValidInt() - 1;
 
-    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return;
+    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) {
+        printf("Error: Seat out of range!\n");
+        return;
+    }
 
     Seat *seat = &movies[m].showtimes[s].seats[r][c];
     if (!seat->isBooked) {
@@ -152,6 +190,9 @@ void cancelBooking() {
     seat->isBooked = 0;
     seat->pricePaid = 0.0;
     strcpy(seat->customerName, "");
+    seat->isStudent = 0;
+    seat->isSenior = 0;
+    seat->foodComboChoice = 0;
 
     printf("Booking successfully cancelled and refunded.\n");
 }
@@ -167,7 +208,7 @@ void searchBooking() {
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLS; c++) {
                     Seat seat = movies[m].showtimes[s].seats[r][c];
-                    if (seat.isBooked && strcasecmp(seat.customerName, name) == 0) {
+                    if (seat.isBooked && strcmp(seat.customerName, name) == 0) {
                         printf("Movie: %s | Show: %s | Seat: %c%d | Paid: Rs. %.2f\n",
                                movies[m].title, movies[m].showtimes[s].time, 'A' + r, c + 1, seat.pricePaid);
                         found = 1;
@@ -176,8 +217,8 @@ void searchBooking() {
             }
         }
     }
-    if(!found) {
-        printf("No bookings found.\n");
+    if (!found) {
+        printf("No bookings found for '%s'.\n", name);
     }
 }
 

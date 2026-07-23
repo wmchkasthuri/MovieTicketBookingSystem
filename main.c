@@ -13,6 +13,8 @@ void searchBooking();
 void revenueReport();
 
 void initData() {
+    memset(movies, 0, sizeof(movies)); // FIX: clear memory for seats and initial revenue calculations
+
     strcpy(movies[0].title, "Avatar 3");
     strcpy(movies[0].showtimes[0].time, "10:00 AM");
     strcpy(movies[0].showtimes[1].time, "02:00 PM");
@@ -33,6 +35,7 @@ int getValidInt() {
         while ((ch = getchar()) != '\n' && ch != EOF);
         printf("Invalid input! Enter a number: ");
     }
+    while ((ch = getchar()) != '\n' && ch != EOF); // FIX: clear trailing '\n' to prevent string reading bugs
     return num;
 }
 
