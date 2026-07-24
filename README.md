@@ -1,9 +1,7 @@
-🎬 Movie Ticket Booking System (CSC 1031)A C-based command-line movie ticket booking application developed for CSC 1031. The system manages seat availability, calculates tiered pricing and stackable discounts, processes cancellations with live revenue tracking, and supports snack combo add-ons—all completely in memory.  ✨ FeaturesShowtime Management: View fixed movies and showtime schedules.  Interactive Seat Grid: Visual $5 \times 10$ seat matrix displaying available tier seats ([R], [P], [V]) and booked seats ([X]).  Tiered Base Pricing:Regular Tier (Rows A–B): Rs. 500.00  Premium Tier (Rows C–D): Rs. 750.00  VIP Tier (Row E): Rs. 1000.00  Discount Rules:Student Discount: 10% off base price  Senior Citizen Discount: 20% off base price  Group Discount: 10% off base price (applies automatically when booking $\ge 4$ seats and stacks with Student/Senior discounts)  Optional Snack Combos: Popcorn + Drink (Rs. 300) or Large Combo (Rs. 500).  Search & Cancellations: Find reservations by customer name and process refunds that automatically subtract from total revenue.  Financial Reporting: Real-time revenue report tracking ticket sales and earnings per showtime along with grand totals.  Robust Input Handling: Defensive buffer management preventing crashes on invalid non-numeric user input.  📁 Repository StructurePlaintext├── main.c           # Entry point, dataset initialization, and main menu loop
+🎬 Movie Ticket Booking System (CSC 1031)
+📁 Repository StructurePlaintext
+├── main.c           # Entry point, dataset initialization, and main menu loop
 ├── operations.c     # Seat display, booking, cancellation, search, and revenue functions
 ├── pricing.c        # Pricing engine and discount calculation logic
 ├── structures.h     # Composite data structures (Movie, Showtime, Seat) and declarations
 └── README.md        # Project documentation
-🛠️ Compilation & RunningRequirementsGCC Compiler (MinGW for Windows, Clang/GCC for macOS/Linux) or an IDE like Code::Blocks / VS Code.  1. Terminal / Command Line CompilationNavigate to the project root directory and run:Bashgcc main.c operations.c pricing.c -o booking
-2. Running the ApplicationWindows:DOSbooking.exe
-macOS / Linux:Bash./booking
-3. Running via Code::BlocksOpen the .cbp project file or import all source files (main.c, operations.c, pricing.c, structures.h), then press Build and Run (F9).  
